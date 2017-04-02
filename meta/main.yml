@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: "Haggai Philip Zagury"
+  description: "install & config NTP"
+  company: "Tikal Knowledge LTD"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.0
+  platforms:
+    - name: EL
+      versions:
+      - all
+    - name: Ubuntu
+      versions:
+      - all
+  galaxy_tags:
+    - system
+    - IT
+    - ntp
+dependencies: []

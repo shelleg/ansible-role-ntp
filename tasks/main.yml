@@ -1,0 +1,48 @@
+---
+# tasks file for ansible-role-ntp
+
+- name: "Include OS-specific vars"
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Set timezone to {{ ntp_timezone }}"
+  file:
+    src: "/usr/share/zoneinfo/{{ ntp_timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: yes
+
+- name: "Set timezone {{ ntp_timezone }} in /etc/timezone file"
+  template:
+    src: timezone.j2
+    dest: /etc/timezone
+    force: yes
+  when: ansible_os_family == 'Debian'
+
+- name: "Install NTP package"
+  package:
+    name: ntp 
+    state: installed
+  when: (ansible_os_family == 'RedHat') or (ansible_os_family == 'Debian')
+
+- name: "Generate ntp.conf file"
+  template: 
+    src: "{{ item }}.j2"
+    dest: "/etc/{{ item }}"
+  notify: restart ntp
+  when: ntp_config
+
+# Enable ntp (default)
+- name: "Enable service -> {{ ntp_service_name }}"
+  service:
+    name: "{{ ntp_service_name }}"
+    state: started
+    enabled: yes
+  when: ntp_enabled
+
+# Disable ntp
+- name: "Disble and stop -> {{ ntp_service_name }}"
+  service:
+    name: "{{ ntp_daemon }}"
+    state: stopped
+    enabled: no
+  when: not ntp_enabled
