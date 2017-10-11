@@ -20,14 +20,14 @@
 
 - name: "Install NTP package"
   package:
-    name: ntp 
+    name: ntp
     state: installed
   when: (ansible_os_family == 'RedHat') or (ansible_os_family == 'Debian')
 
 - name: "Generate ntp.conf file"
-  template: 
-    src: "{{ item }}.j2"
-    dest: "/etc/{{ item }}"
+  template:
+    src: "ntp.conf.j2"
+    dest: "/etc/ntp.conf"
   notify: restart ntp
   when: ntp_config
 
